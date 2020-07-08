@@ -31,13 +31,17 @@ import qualified Data.Attoparsec.ByteString.Char8 as Atto
 import           Network.Socket (PortNumber)
 import           Network.URI (URI, parseURI)
 
+import           Cardano.Chain.Slotting (EpochSlots(..))
 import           Cardano.Slotting.Slot (SlotNo(..))
 
 import           Ouroboros.Consensus.BlockchainTime (SystemStart (..))
+import           Ouroboros.Consensus.Cardano (SecurityParam (..))
+
 import qualified Shelley.Spec.Ledger.BaseTypes as Shelley
 import qualified Shelley.Spec.Ledger.TxData as Shelley
 
 import qualified Cardano.Api as OldApi
+import           Cardano.Api.Protocol (Protocol (..), ProtocolData (..))
 import           Cardano.Api.Typed hiding (PoolId)
 
 import           Cardano.Slotting.Slot (EpochNo (..))
@@ -318,6 +322,7 @@ pTransaction =
     pTransactionSubmit  :: Parser TransactionCmd
     pTransactionSubmit = TxSubmit <$> pTxSubmitFile
                                   <*> pNetwork
+                                  <*> pProtocolData
 
     pTransactionCalculateMinFee :: Parser TransactionCmd
     pTransactionCalculateMinFee =
@@ -1055,6 +1060,60 @@ pITNVerificationKeyFile =
       <> Opt.help "Filepath of the ITN verification key."
       <> Opt.completer (Opt.bashCompleter "file")
       )
+
+pProtocolData :: Parser ProtocolData
+pProtocolData = pProtocolData'
+  where
+    pProtocolData' :: Parser ProtocolData
+    pProtocolData' =
+        (  Opt.flag' ()
+            (  Opt.long "shelley"
+            <> Opt.help "Use the Shelley protocol."
+            )
+        *> pShelley
+        )
+      <|>
+        (  Opt.flag' ()
+            (  Opt.long "byron"
+            <> Opt.help "Use the Byron protocol."
+            )
+        *> pByron
+        )
+      <|>
+        (  Opt.flag' CardanoProtocol
+            (  Opt.long "cardano"
+            <> Opt.help "Use the Cardano protocol." -- TODO: Explain what this is.
+            )
+        *> pCardano
+        )
+
+    pByron :: Parser ProtocolData
+    pByron = ProtocolDataByron <$> pEpochSlots <*> pSecurityParam
+
+    pShelley :: Parser ProtocolData
+    pShelley = pure ProtocolDataShelley
+
+    pCardano :: Parser ProtocolData
+    pCardano = ProtocolDataCardano <$> pEpochSlots <*> pSecurityParam
+
+    pEpochSlots :: Parser EpochSlots
+    pEpochSlots =
+      EpochSlots <$>
+        Opt.option Opt.auto
+          (  Opt.long "epoch-slots"
+          <> Opt.metavar "NATURAL"
+          <> Opt.help "The number of slots per epoch."
+          )
+
+    pSecurityParam :: Parser SecurityParam
+    pSecurityParam =
+      SecurityParam <$>
+        Opt.option Opt.auto
+          (  Opt.long "security-param"
+          <> Opt.metavar "NATURAL"
+          <> Opt.help "The security parameter."
+          )
+
 
 pNetwork :: Parser OldApi.Network
 pNetwork =
