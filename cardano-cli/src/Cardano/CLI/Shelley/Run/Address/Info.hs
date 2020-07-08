@@ -5,10 +5,13 @@ module Cardano.CLI.Shelley.Run.Address.Info
   ) where
 
 import           Cardano.Prelude hiding (putStrLn)
-import           Prelude (putStrLn)
+import           Prelude (String, putStrLn)
 
 import           Control.Monad.Trans.Except (ExceptT)
 import           Control.Monad.Trans.Except.Extra (left)
+import qualified Data.ByteString.Base16 as Base16
+import           Data.Text (unpack)
+import qualified Data.Text.Encoding as Text
 
 import           Cardano.Api.Typed
 
@@ -37,8 +40,13 @@ runAddressInfo addrTxt =
           ShelleyAddress{} -> do
             putStrLn "Era: Shelley"
             putStrLn "Encoding: Bech32"
+        putStrLn $ "Base16: " ++ asBase16 payaddr
 
-      Just (Right _stakeaddr) ->  liftIO $ do
+      Just (Right addr) ->  liftIO $ do
         putStrLn "Type: Stake address"
         putStrLn "Era: Shelley"
         putStrLn "Encoding: Bech32"
+        putStrLn $ "Base16: " ++ asBase16 addr
+  where
+    asBase16 :: SerialiseAsRawBytes a => a -> String
+    asBase16 = unpack . Text.decodeUtf8 . Base16.encode . serialiseToRawBytes
