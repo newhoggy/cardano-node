@@ -21,15 +21,19 @@ package cardano-node
 
 package ouroboros-consensus
   tests: False
+  flags: +asserts
 
 package ouroboros-consensus-cardano
   tests: False
+  flags: +asserts
 
 package ouroboros-consensus-byron
   tests: False
+  flags: +asserts
 
 package ouroboros-consensus-shelley
   tests: False
+  flags: +asserts
 
 package ouroboros-consensus-mock
   tests: False
@@ -63,6 +67,7 @@ package shelley-spec-non-integral
 
 package network-mux
   tests: False
+  flags: +asserts
 
 package typed-protocols
   tests: False
@@ -102,6 +107,7 @@ package small-steps
 
 package ouroboros-network
   tests: False
+  flags: +asserts
 
 package shelley-spec-ledger
   tests: False
