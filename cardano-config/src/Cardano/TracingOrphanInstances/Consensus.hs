@@ -5,6 +5,7 @@
 {-# LANGUAGE NamedFieldPuns        #-}
 {-# LANGUAGE OverloadedStrings     #-}
 {-# LANGUAGE ScopedTypeVariables   #-}
+{-# LANGUAGE StandaloneDeriving    #-}
 {-# LANGUAGE TypeFamilies          #-}
 {-# LANGUAGE UndecidableInstances  #-}
 
@@ -18,7 +19,6 @@ import           Prelude (show)
 import qualified Data.Text as Text
 import           Data.Text (pack)
 
-import           Cardano.Config.Orphanage ()
 import           Cardano.TracingOrphanInstances.Common
 import           Cardano.TracingOrphanInstances.Network (showTip, showPoint)
 
