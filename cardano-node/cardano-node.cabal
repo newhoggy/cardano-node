@@ -1,3 +1,5 @@
+cabal-version: 2.2
+
 name:                  cardano-node
 version:               1.15.1
 description:           The cardano full node
@@ -8,8 +10,9 @@ license-files:
   LICENSE
   NOTICE
 build-type:            Simple
-cabal-version:         >= 1.10
 extra-source-files:    ChangeLog.md
+synopsis:              Cardano Node
+category:              Blockchain
 
 Flag unexpected_thunks
   Description:   Turn on unexpected thunks checks
@@ -54,6 +57,7 @@ library
   other-modules:       Paths_cardano_node
                        Cardano.Node.Socket
                        Cardano.Tracing.MicroBenchmarking
+  autogen-modules:     Paths_cardano_node
 
   build-depends:       aeson
                      , async

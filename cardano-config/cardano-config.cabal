@@ -9,6 +9,9 @@ license-files:
 build-type:            Simple
 cabal-version:         >= 1.10
 extra-source-files:    README.md
+description:           Cardano Configuration
+synopsis:              Cardano Config
+category:              Blockchain
 
 flag systemd
   description: Enable systemd support

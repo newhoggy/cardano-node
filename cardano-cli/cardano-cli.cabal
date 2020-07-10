@@ -10,6 +10,8 @@ license-files:
 build-type:            Simple
 cabal-version:         >= 1.10
 extra-source-files:    README.md
+synopsis:              Cardano CLI
+category:              Blockchain
 
 Flag unexpected_thunks
   Description:   Turn on unexpected thunks checks
