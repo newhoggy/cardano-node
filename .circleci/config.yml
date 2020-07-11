@@ -8,8 +8,56 @@ workflows:
     jobs:
 
       - haskell/build-with-binary-cache:
+          name: GHC 8.4.4
+          executor: haskell/ghc-8_4_4
+          context: haskell-ci
+          fail-incoherent-builds: false
+          after-checkout:
+            - run:
+                name: Install system dependencies
+                command: |
+                  apt update -y
+                  apt install -y libsodium23 libsodium-dev libsystemd-dev
+                  apt install -y bc shellcheck
+          before-build:
+            - run:
+                name: Configure to use extrnal libsodium vrf
+                command: |
+                  cat >> cabal.project.local \<<EOF
+                  package cardano-crypto-praos
+                    flags: -external-libsodium-vrf
+                  EOF
+          binary-cache-uri: ${BINARY_CACHE_URI-"http://hw-binary-cache-us-west-2-a.s3-website-us-west-2.amazonaws.com/archive"}
+          cabal-build-extra: --write-ghc-environment-files=ghc8.4.4+ --disable-benchmarks
+          cabal-test-extra: --test-show-details=direct --test-options='+RTS -g1' --disable-benchmarks
+
+      - haskell/build-with-binary-cache:
           name: GHC 8.6.5
           executor: haskell/ghc-8_6_5
+          context: haskell-ci
+          fail-incoherent-builds: false
+          after-checkout:
+            - run:
+                name: Install system dependencies
+                command: |
+                  apt update -y
+                  apt install -y libsodium23 libsodium-dev libsystemd-dev
+                  apt install -y bc shellcheck
+          before-build:
+            - run:
+                name: Configure to use extrnal libsodium vrf
+                command: |
+                  cat >> cabal.project.local \<<EOF
+                  package cardano-crypto-praos
+                    flags: -external-libsodium-vrf
+                  EOF
+          binary-cache-uri: ${BINARY_CACHE_URI-"http://hw-binary-cache-us-west-2-a.s3-website-us-west-2.amazonaws.com/archive"}
+          cabal-build-extra: --write-ghc-environment-files=ghc8.4.4+ --disable-benchmarks
+          cabal-test-extra: --test-show-details=direct --test-options='+RTS -g1' --disable-benchmarks
+
+      - haskell/build-with-binary-cache:
+          name: GHC 8.8.1
+          executor: haskell/ghc-8_8_3
           context: haskell-ci
           fail-incoherent-builds: false
           after-checkout:
